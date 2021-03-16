@@ -4,6 +4,7 @@
 
 #lags
 import mpmath
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -43,6 +44,8 @@ def main():
 
     print()
     nist(elmtArr)
+    graphic(elmtArr)
+
 
 def fibonacci(N, A, B, elmtArr):
     result = elmtArr[N - A] - elmtArr[N - B]
@@ -94,7 +97,17 @@ def nist(arr):
     P = mpmath.gammainc(K/2, x/2)
 
     print(P)
-                
 
+def graphic(arr):
+    i = 1
+    x = []
+    y =[]
+    while i < len(arr):
+        x.append(arr[i-1])
+        y.append(arr[i])
+        i += 2 
 
+    plt.plot(x, y, 'ro')
+    plt.show()
+    
 main()
