@@ -43,8 +43,8 @@ def main():
         print(elmtArr[i])
 
     print()
-    nist(elmtArr)
-    graphic(elmtArr)
+    nist(elmtArr[start:])
+    graphic(elmtArr[start:])
 
 
 def fibonacci(N, A, B, elmtArr):
@@ -53,40 +53,66 @@ def fibonacci(N, A, B, elmtArr):
     elmtArr.append(result + 1 if result < 0 else result ) 
 
 def nist(arr):
-    M = 8  
-    numV = 4
-    V = [0, 0, 0, 0]
+    V = [0, 0, 0, 0, 0]
+    string = ""
+
     for i in arr:
         tmp =  str(i).split('.') 
         if (len(tmp) > 1):
             dec = int(tmp[1]) 
-            res = bin(dec)
-            string = str(res)[2:]
-            maximum = 0
-            count = 0
-
-            for j in string:
-                if j == '1':
-                    count += 1
-                    if count > maximum:
-                        maximum = count
-                else:
-                    count = 0
-
-            if maximum > numV:
-                V[numV - 1] += 1
-            else:
-                maximum -= 1
-                if maximum < 0:
-                    V[0] += 1
-                else:
-                    V[maximum] += 1
+            res = str(bin(dec))[2:]
+            if 4 - len(res) > 0:
+                string += "0" * (4 - len(res))
+            string += res
     
-    p =[0.2148, 0.3672, 0.2305, 0.1875]
+    if (len(string) <= 128):
+        M = 8  
+        numV = 4
+        minElmt = 1
+        maxElmt = 4
+        p =[0.2148, 0.3672, 0.2305, 0.1875]
+        K = 3
+        R = 16
+    else:
+        M = 64  
+        numV = 5
+        minElmt = 2
+        maxElmt = 6
+        p =[0.1174, 0.2430, 0.2493, 0.1752, 0.1027, 0.1124]
+        K = 5
+        R = 49
 
-    K = 3
-    R = 16
+
+    i = 0
+
+  
+
+    while (i < len(string)):
+        str_slice = string[i:(i+M)]
+        maximum = 0
+        count = 0
+        for j in str_slice:
+            if j == '1':
+                count += 1
+                if count > maximum:
+                     maximum = count
+            else:
+                count = 0
+
+        if maximum >= maxElmt:
+            V[numV - 1] += 1
+        else:
+            # maximum -= 1
+            if maximum <= minElmt:
+                V[0] += 1
+            else:
+                V[maximum - 1] += 1
+        
+        i += M
+
     x = 0
+
+    print(V)
 
     for i in range(4):
         up = (V[i] - (R * p[i]))**2
@@ -95,8 +121,7 @@ def nist(arr):
         x += res
 
     P = mpmath.gammainc(K/2, x/2)
-
-    print(P)
+    print(f"{round(P, 5)} - NIST Test")
 
 def graphic(arr):
     i = 1
